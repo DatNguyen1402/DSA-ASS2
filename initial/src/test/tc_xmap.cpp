@@ -1,4 +1,4 @@
-#include "test/tc_xmap.h"
+// #include "test/tc_xmap.h"
 
 #include "hash/xMap.h"
 #include "util/Point.h"
@@ -474,4 +474,17 @@ void countryDemo(){
     
     string countryname = "Thailand";
     cout << countryname << " : " << map.get(countryname) << endl;
+}
+
+int main() {
+    // simpleMap();
+    // hashDemo1();
+    // hashDemo2();
+    // hashDemo3();
+    // hashDemo4();
+    // hashDemo5();
+    // hashDemo6();
+    // hashDemo7();
+    countryDemo();
+    return 0;
 }
