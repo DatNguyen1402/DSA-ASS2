@@ -11,6 +11,10 @@
  #include <type_traits>
  using namespace std;
  
+ std::ostream& operator<<(std::ostream& os, const std::pair<char, int>& p) {
+    os << "(" << p.first << ", " << p.second << ")";
+    return os;
+}
  template <class T>
  class XArrayList : public IList<T>
  {
@@ -416,5 +420,6 @@
      capacity = newCapacity;
  }
  
+
  #endif /* XARRAYLIST_H */
  

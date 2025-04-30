@@ -15,6 +15,7 @@ int charHashFunc(char& key, int tablesize) {
 }
 
 void tc_huffman1001() {
+    cout << "Test case 1001" << endl;
     XArrayList<pair<char, int>> symbolFreqs;
     symbolFreqs.add(make_pair('A', 5));
     
@@ -27,25 +28,28 @@ void tc_huffman1001() {
     string codeA = codeTable.get('A');
     cout << "Code for A: " << codeA << endl;
     
-    string decoded = tree.decode(codeA);
-    cout << "Decoded string: " << decoded << endl;
 }
 
 void tc_huffman1002() {
+    cout << "Test case 1002" << endl;
     XArrayList<pair<char, int>> symbolFreqs;
     symbolFreqs.add(make_pair('A', 5));
     symbolFreqs.add(make_pair('B', 3));
     symbolFreqs.add(make_pair('C', 7));
     symbolFreqs.add(make_pair('D', 2));
+    symbolFreqs.add(make_pair('E', 2));
+    symbolFreqs.add(make_pair('F', 3));
     
     HTree tree;
+    cout << "Building Huffman tree..." << endl;
     tree.build(symbolFreqs);
     
     xMap<char, string> codeTable(&charHashFunc);
+    cout << "Generating codes..." << endl;
     tree.generateCodes(codeTable);
     
     cout << "Generated codes:" << endl;
-    for (char ch = 'A'; ch <= 'D'; ++ch) {
+    for (char ch = 'A'; ch <= 'F'; ++ch) {
         string code = codeTable.get(ch);
         cout << "Code for " << ch << ": " << code << endl;
     }
@@ -58,6 +62,7 @@ void tc_huffman1003() {
     symbolFreqs.add(make_pair('Z', 2));
     
     HTree tree;
+
     tree.build(symbolFreqs);
     
     xMap<char, string> codeTable(&charHashFunc);

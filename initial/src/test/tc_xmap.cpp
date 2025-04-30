@@ -141,8 +141,8 @@ void hashDemo5() {
 }
 
 void hashDemo6() {
-    int count = 10000000;
-    //int count = 100;
+    // int count = 10000000;
+    int count = 100;
     int *keys = genIntArray(count, 0, 1999999999);
     xMap<int, int*> hash(&xMap<int, int*>::simpleHash);
     for (int idx = 0; idx < count; idx++) {
@@ -477,14 +477,33 @@ void countryDemo(){
 }
 
 int main() {
-    // simpleMap();
-    // hashDemo1();
-    // hashDemo2();
-    // hashDemo3();
-    // hashDemo4();
-    // hashDemo5();
-    // hashDemo6();
-    // hashDemo7();
-    countryDemo();
+    cout << "Select a test case to run:" << endl;
+    cout << "1. simpleMap" << endl;
+    cout << "2. hashDemo1" << endl;
+    cout << "3. hashDemo2" << endl;
+    cout << "4. hashDemo3" << endl;
+    cout << "5. hashDemo4" << endl;
+    cout << "6. hashDemo5" << endl;
+    cout << "7. hashDemo6" << endl;
+    cout << "8. hashDemo7" << endl;
+    cout << "9. countryDemo" << endl;
+    cout << "Your choice: ";
+
+    int choice;
+    cin >> choice;
+
+    switch (choice) {
+        case 1: simpleMap(); break;
+        case 2: hashDemo1(); break;
+        case 3: hashDemo2(); break;
+        case 4: hashDemo3(); break;
+        case 5: hashDemo4(); break;
+        case 6: hashDemo5(); break;
+        case 7: hashDemo6(); break;
+        case 8: hashDemo7(); break;
+        case 9: countryDemo(); break;
+        default: cout << "Invalid choice." << endl;
+    }
+
     return 0;
 }

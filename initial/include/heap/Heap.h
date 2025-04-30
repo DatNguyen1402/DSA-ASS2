@@ -53,6 +53,8 @@ public:
     string toString(string (*item2str)(T&)=0 );
     //Inherit from IHeap: END
     
+    void heapsort(XArrayList<T>& arrayList);
+    
     void println(string (*item2str)(T&)=0 ){
         cout << toString(item2str) << endl;
     }
@@ -99,7 +101,6 @@ private:
     void removeInternalData();
     void copyFrom(const Heap<T>& heap);
 
-    void heapsort(XArrayList<T>& arrayList);
     
 //////////////////////////////////////////////////////////////////////
 ////////////////////////  INNER CLASSES DEFNITION ////////////////////
@@ -185,7 +186,7 @@ template<class T>
 void Heap<T>::push(T item){ //item  = 25
     ensureCapacity(count + 1); //[18, 15, 13, 25 , , ]
     elements[count] = item;
-    count += 1; //count = 
+    count += 1; 
     reheapUp(count - 1); // [18, 15, 13, 25 , , ]
 }
 /*
@@ -237,16 +238,16 @@ const T Heap<T>::peek(){
 
 template<class T>
 void Heap<T>::remove(T item, void (*removeItemData)(T)){
-    int foundIdx = this->getItem(item);
-    
-    //CASE 1: not found
-    if(foundIdx == -1) return;
+    int removeIdx = this->getItem(item);
+    // not found
+    if(removeIdx == -1) return;
 
-    //CASE 2: found at foundIdx
-    elements[foundIdx] = elements[count - 1]; 
+    //found 
+    elements[removeIdx] = elements[count - 1]; 
     count -= 1;
-    reheapDown(foundIdx);
-    if(removeItemData != NULL) removeItemData(item); //free item's memory
+
+    reheapDown(removeIdx);
+    if(removeItemData != NULL) removeItemData(item); 
 }
 
 /*
@@ -417,22 +418,35 @@ int Heap<T>::getItem(T item){
 
 template<class T>
 void Heap<T>::removeInternalData(){
-    if(this->deleteUserData != 0) deleteUserData(this); //clear users's data if they want
+    if(this->deleteUserData != 0) deleteUserData(this);
     delete []elements;
 }
 
 template<class T>
 void Heap<T>::copyFrom(const Heap<T>& heap){
-    capacity = heap.capacity;
-    count = heap.count;
-    elements = new T[capacity];
+    this->capacity = heap.capacity;
+    this->count = heap.count;
+    this->elements = new T[capacity];
     this->comparator = heap.comparator;
     this->deleteUserData = heap.deleteUserData;
-    
-    //Copy items from heap:
+
     for(int idx=0; idx < heap.size(); idx++){
         this->elements[idx] = heap.elements[idx];
     }
 }
 
+template<class T>
+void Heap<T>::heapsort(XArrayList<T>& arrayList){
+    removeInternalData();
+    capacity = 10;
+    count = 0;
+    elements = new T[capacity];
+    for(int idx=0; idx < arrayList.size(); idx++){
+        push(arrayList.get(idx));
+    }
+    for(int idx=count-1; idx >= 0; idx--){
+        arrayList.add(idx);
+    }
+    
+}
 #endif
