@@ -140,7 +140,7 @@ template <int treeOrder>
 void HuffmanTree<treeOrder>::generateCodes(xMap<char, std::string> &table, HuffmanNode* root, std::string code)
 {
     //TODO
-    if (root->children.empty()) {
+    if (root->children.empty() && root->symbol != '\0' && root->freq > 0) {
         table.put(root->symbol, code);  
         return;
     }
@@ -211,27 +211,41 @@ template <int treeOrder>
 void InventoryCompressor<treeOrder>::buildHuffman()
 {
     //TODO
-    int charFreq[256] = {0}; // Assuming ASCII characters
-    
+    int charFreq[128] = {0}; 
+    XArrayList<pair<char, int>> symbolsFreqs = XArrayList<pair<char, int>>();
+
     for (int i = 0; i < invManager->size(); i++) {
         
         std::string attributesString = productToString(invManager->getProductAttributes(i), invManager->getProductName(i));
 
-        for (char ch : attributesString) {
-            charFreq[(unsigned char)ch]++;
+        for(int j = 0; j < attributesString.size(); j++){
+            unsigned char c = attributesString[j];
+            charFreq[c]+=1;
+
         }
     }
-    XArrayList<pair<char, int>> symbolsFreqs;
-    for (int i = 0; i < 256; i++) {
-        if (charFreq[i] > 0) {
-            symbolsFreqs.add(std::make_pair((char)i, charFreq[i]));
+
+    for (int i = 0; i < 128; i++) {
+        if (charFreq[i] > 0) { // Ignore null character
+
         }
     }
     
+    
+    for (int i = 0; i < 128; i++) {
+        if (charFreq[i] > 0 && (char)i != '\0') { // Ignore null character
+
+            symbolsFreqs.add(std::make_pair((char)i, charFreq[i]));
+        }
+    }
+
+
+
+    
+
 
     tree->build(symbolsFreqs);
-    tree->generateCodes(*huffmanTable); // fault here cause lack of hash function in huffmanTable
-
+    tree->generateCodes(*huffmanTable); 
 
     // void HuffmanTree<treeOrder>::build(XArrayList<pair<char, int>>& symbolsFreqs)
 
@@ -251,11 +265,10 @@ std::string InventoryCompressor<treeOrder>::productToString(const List1D<Invento
 {
     //TODO
     std::ostringstream oss;
-    oss << name << ":";
-    for (int i = 0; i < attributes.size(); ++i) {
-        oss << "(";
-        oss << attributes.get(i).toString();
-        oss << ")";
+    oss << name << ": ";
+    for (int i = 0; i < attributes.size(); i++) {
+        const InventoryAttribute& attr = attributes.get(i);
+        oss << "(" << attr.name<< ":"<< attr.getValue() << ")";
         if (i < attributes.size() - 1) {
             oss << ", ";
         }
@@ -284,17 +297,35 @@ std::string InventoryCompressor<treeOrder>::decodeHuffman(const std::string &huf
 {
     //TODO
     std::string decodeString = tree->decode(huffmanCode);
-
+    attributesOutput = List1D<InventoryAttribute>();
     std::istringstream iss(decodeString);
     std::string token;
     std::getline(iss, nameOutput, ':'); // Extract name
     while (std::getline(iss, token, ',')) {
-        std::istringstream attrStream(token);
-        std::string attrName;
-        double attrValue;
-        char delimiter;
-        attrStream >> attrName >> delimiter >> attrValue >> delimiter; // Read until the closing parenthesis
-        attributesOutput.add(InventoryAttribute(attrName, attrValue));
+        if (!token.empty() && token.front() == ' ') {
+            token.erase(0, 2);
+        }
+        // Xoá dấu ')' ở cuối nếu có
+        if (!token.empty() && token.back() == ')') {
+            token.pop_back();
+        }
+    
+        size_t sep = token.find(':');
+        if (sep == std::string::npos) {
+            std::cerr << "Invalid attribute token: " << token << std::endl;
+            continue;
+        }
+    
+        std::string attrName = token.substr(0, sep);
+        std::string valueStr = token.substr(sep + 1);
+    
+        try {
+            double attrValue = std::stod(valueStr);
+            attributesOutput.add(InventoryAttribute(attrName, attrValue));
+        } catch (const std::exception& e) {
+            std::cerr << "Error converting value in token '" << token << "': " << e.what() << std::endl;
+        }
     }
+    
     return decodeString;
 }

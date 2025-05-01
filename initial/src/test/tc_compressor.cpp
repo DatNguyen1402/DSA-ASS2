@@ -86,7 +86,7 @@ void tc_huffman1004() {
     xMap<char, string> codeTable(&charHashFunc);
     tree.generateCodes(codeTable);
 
-    string decoded = tree.decode("1");
+    string decoded = tree.decode("0");
     cout << "Decoded string from invalid code: " << decoded << endl;
 }
 
@@ -158,8 +158,16 @@ void tc_compressor1002() {
 
     cout << "FLAG"<<endl;
     
-    cout << "Decoded Car: " << decodeCar << endl;
-    cout << "Decoded name: " << decodename << endl;
-    cout << "Decoded attributes: " << decodedAttrs.toString() << endl;
+    cout << "Decoded Car String: " << decodeCar << endl;
+    cout << "Decoded Car Name: " << decodename << endl;
+    cout << "Decoded Car Attributes: " << decodedAttrs.toString() <<endl;
+  
+
+    string decodeBattery = compressor.decodeHuffman(encodedBattery, decodedAttrs, decodename );
+    cout << "Decoded Battery String: " << decodeBattery << endl;
+    cout << "Decoded Battery Name: " << decodename << endl;
+    cout << "Decoded Battery Attributes: " << decodedAttrs.toString() << endl;
+
+    
 
 }

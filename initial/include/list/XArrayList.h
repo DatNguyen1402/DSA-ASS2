@@ -261,7 +261,7 @@
  void XArrayList<T>::add(T e)
  {
      // TODO
-     ensureCapacity(count);
+     ensureCapacity(count+1);
      data[count++] = e;
  }
  
@@ -271,7 +271,7 @@
      // TODO
      if (index < 0 || index > count) throw out_of_range("Index is out range");
  
-     ensureCapacity(count);
+     ensureCapacity(count+1);
  
      for (int i = count-1; i >= index; i--){
          data[i+1] = data[i];
