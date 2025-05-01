@@ -140,7 +140,7 @@ template <int treeOrder>
 void HuffmanTree<treeOrder>::generateCodes(xMap<char, std::string> &table, HuffmanNode* root, std::string code)
 {
     //TODO
-    if (root->children.size() == 0) {
+    if (root->children.empty()) {
         table.put(root->symbol, code);  
         return;
     }
@@ -162,25 +162,80 @@ template <int treeOrder>
 std::string HuffmanTree<treeOrder>::decode(const std::string &huffmanCode)
 {
     //TODO
-    return std::string();
-}
+    std::string result = "";
+    HuffmanNode* current = root;
 
+    for (char c : huffmanCode)
+    {
+        int index = c - '0'; 
+
+        if (index < 0 || index >= treeOrder)
+            throw std::runtime_error("Invalid Huffman code");
+
+        current = current->children.get(index);
+
+        if (current->children.empty())
+        {
+            result += current->symbol;
+            current = root; 
+        }
+    }
+
+    if (current != root)
+        throw std::runtime_error("Incomplete Huffman code"); 
+
+    return result;
+    
+}
+int defautHashFunc(char& key, int tablesize) {
+    return (int)key % tablesize;
+}
 template <int treeOrder>
 InventoryCompressor<treeOrder>::InventoryCompressor(InventoryManager *manager)
 {
     //TODO
+    this->invManager = manager;
+    this->tree = new HuffmanTree<treeOrder>();
+    this->huffmanTable = new xMap<char, std::string>(&defautHashFunc);
+
 }
 
 template <int treeOrder>
 InventoryCompressor<treeOrder>::~InventoryCompressor()
 {
     //TODO
+
 }
 
 template <int treeOrder>
 void InventoryCompressor<treeOrder>::buildHuffman()
 {
     //TODO
+    int charFreq[256] = {0}; // Assuming ASCII characters
+    
+    for (int i = 0; i < invManager->size(); i++) {
+        
+        std::string attributesString = productToString(invManager->getProductAttributes(i), invManager->getProductName(i));
+
+        for (char ch : attributesString) {
+            charFreq[(unsigned char)ch]++;
+        }
+    }
+    XArrayList<pair<char, int>> symbolsFreqs;
+    for (int i = 0; i < 256; i++) {
+        if (charFreq[i] > 0) {
+            symbolsFreqs.add(std::make_pair((char)i, charFreq[i]));
+        }
+    }
+    
+
+    tree->build(symbolsFreqs);
+    tree->generateCodes(*huffmanTable); // fault here cause lack of hash function in huffmanTable
+
+
+    // void HuffmanTree<treeOrder>::build(XArrayList<pair<char, int>>& symbolsFreqs)
+
+
 }
 
 template <int treeOrder>
@@ -195,19 +250,51 @@ template <int treeOrder>
 std::string InventoryCompressor<treeOrder>::productToString(const List1D<InventoryAttribute> &attributes, const std::string &name)
 {
     //TODO
-    return std::string();
+    std::ostringstream oss;
+    oss << name << ":";
+    for (int i = 0; i < attributes.size(); ++i) {
+        oss << "(";
+        oss << attributes.get(i).toString();
+        oss << ")";
+        if (i < attributes.size() - 1) {
+            oss << ", ";
+        }
+    }
+    return oss.str();
 }
 
 template <int treeOrder>
 std::string InventoryCompressor<treeOrder>::encodeHuffman(const List1D<InventoryAttribute> &attributes, const std::string &name)
 {
     //TODO
-    return std::string();
+    std::string defautCode = productToString(attributes, name);
+    std::string huffmanCode = "";
+    for (char ch : defautCode) {
+        if (huffmanTable->containsKey(ch)) {
+            huffmanCode += huffmanTable->get(ch);
+        } else {
+            throw std::runtime_error("Character not found in Huffman table");
+        }
+    }
+    return huffmanCode;
 }
 
 template <int treeOrder>
 std::string InventoryCompressor<treeOrder>::decodeHuffman(const std::string &huffmanCode, List1D<InventoryAttribute> &attributesOutput, std::string &nameOutput)
 {
     //TODO
-    return std::string();
+    std::string decodeString = tree->decode(huffmanCode);
+
+    std::istringstream iss(decodeString);
+    std::string token;
+    std::getline(iss, nameOutput, ':'); // Extract name
+    while (std::getline(iss, token, ',')) {
+        std::istringstream attrStream(token);
+        std::string attrName;
+        double attrValue;
+        char delimiter;
+        attrStream >> attrName >> delimiter >> attrValue >> delimiter; // Read until the closing parenthesis
+        attributesOutput.add(InventoryAttribute(attrName, attrValue));
+    }
+    return decodeString;
 }

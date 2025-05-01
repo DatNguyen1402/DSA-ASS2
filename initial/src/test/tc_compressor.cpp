@@ -86,7 +86,7 @@ void tc_huffman1004() {
     xMap<char, string> codeTable(&charHashFunc);
     tree.generateCodes(codeTable);
 
-    string decoded = tree.decode("0");
+    string decoded = tree.decode("1");
     cout << "Decoded string from invalid code: " << decoded << endl;
 }
 
@@ -112,15 +112,20 @@ void tc_huffman1005() {
 }
 
 void tc_compressor1001() {    
+    cout << "Test case 1001" << endl;
     InventoryManager manager;
     List1D<InventoryAttribute> attrs;
     attrs.add(InventoryAttribute("weight", 2.5));
     attrs.add(InventoryAttribute("voltage", 12.0));
     manager.addProduct(attrs, "Gadget", 50);
     
+    cout << "building huffman tree..." << endl;
     InvCompressor compressor(&manager);
+    cout << "successfully add compressor inventory" << endl;
+
     compressor.buildHuffman();
     
+    cout << "encoded product Gadget" << endl;
     string encoded = compressor.encodeHuffman(attrs, "Gadget");
     cout << "Encoded product: " << encoded << endl;
 }
@@ -146,4 +151,15 @@ void tc_compressor1002() {
     
     cout << "Encoded Car: " << encodedCar << endl;
     cout << "Encoded Battery: " << encodedBattery << endl;
+
+    string decodename;
+    List1D<InventoryAttribute> decodedAttrs;
+    string decodeCar = compressor.decodeHuffman(encodedCar, decodedAttrs, decodename );
+
+    cout << "FLAG"<<endl;
+    
+    cout << "Decoded Car: " << decodeCar << endl;
+    cout << "Decoded name: " << decodename << endl;
+    cout << "Decoded attributes: " << decodedAttrs.toString() << endl;
+
 }

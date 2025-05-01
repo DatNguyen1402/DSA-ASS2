@@ -23,9 +23,9 @@ void (*func_ptr[17])() = {
     tc_huffman1002,
     tc_huffman1003,
     tc_huffman1004,
-    tc_huffman1005
-    // tc_compressor1001,
-    // tc_compressor1002
+    tc_huffman1005,
+    tc_compressor1001,
+    tc_compressor1002
 };
 
 void run(int func_idx)
