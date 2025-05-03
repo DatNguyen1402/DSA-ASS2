@@ -140,7 +140,7 @@ template <int treeOrder>
 void HuffmanTree<treeOrder>::generateCodes(xMap<char, std::string> &table, HuffmanNode* root, std::string code)
 {
     //TODO
-    if (root->children.empty() && root->symbol != '\0' && root->freq > 0) {
+    if (root->children.empty()) {
         table.put(root->symbol, code);  
         return;
     }
@@ -211,12 +211,13 @@ template <int treeOrder>
 void InventoryCompressor<treeOrder>::buildHuffman()
 {
     //TODO
-    int charFreq[128] = {0}; 
+    int charFreq[256] = {0}; 
     XArrayList<pair<char, int>> symbolsFreqs = XArrayList<pair<char, int>>();
 
     for (int i = 0; i < invManager->size(); i++) {
         
         std::string attributesString = productToString(invManager->getProductAttributes(i), invManager->getProductName(i));
+        cout << "attributesString: " << attributesString << std::endl;
 
         for(int j = 0; j < attributesString.size(); j++){
             unsigned char c = attributesString[j];
@@ -225,21 +226,17 @@ void InventoryCompressor<treeOrder>::buildHuffman()
         }
     }
 
-    for (int i = 0; i < 128; i++) {
-        if (charFreq[i] > 0) { // Ignore null character
-
-        }
-    }
     
-    
-    for (int i = 0; i < 128; i++) {
-        if (charFreq[i] > 0 && (char)i != '\0') { // Ignore null character
+    for (int i = 0; i < 256; i++) {
+        if (charFreq[i] > 0) { 
 
             symbolsFreqs.add(std::make_pair((char)i, charFreq[i]));
         }
     }
 
-
+    // for (int i = 0; i < symbolsFreqs.size(); i++) {
+    //     std::cout << symbolsFreqs.get(i).first << ": " << symbolsFreqs.get(i).second << std::endl;
+    // }
 
     
 
@@ -265,10 +262,10 @@ std::string InventoryCompressor<treeOrder>::productToString(const List1D<Invento
 {
     //TODO
     std::ostringstream oss;
-    oss << name << ": ";
+    oss << name << ":";
     for (int i = 0; i < attributes.size(); i++) {
         const InventoryAttribute& attr = attributes.get(i);
-        oss << "(" << attr.name<< ":"<< attr.getValue() << ")";
+        oss << "(" << attr.toString() << ")";
         if (i < attributes.size() - 1) {
             oss << ", ";
         }
