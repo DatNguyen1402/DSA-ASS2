@@ -49,6 +49,15 @@ private:
 
     //helper
     void generateCodes(xMap<char, std::string>& table, HuffmanNode* root, std::string code);
+    void deleteTree(HuffmanNode* node) {
+        if (node == nullptr) return;
+        if (node) {
+            for (int i = 0; i < node->children.size(); i++) {
+                deleteTree(node->children.get(i));
+            }
+            delete node;
+        }
+    };
 };
 
 
@@ -77,12 +86,14 @@ private:
 template <int treeOrder>
 HuffmanTree<treeOrder>::HuffmanTree()
 {
+    root = nullptr;
 }
 
 template <int treeOrder>
 HuffmanTree<treeOrder>::~HuffmanTree()
 {
     //TODO
+    deleteTree(root); 
 }
 
 template <typename NodePtr>
@@ -204,7 +215,8 @@ template <int treeOrder>
 InventoryCompressor<treeOrder>::~InventoryCompressor()
 {
     //TODO
-
+    delete huffmanTable;
+    delete tree;
 }
 
 template <int treeOrder>
@@ -302,7 +314,7 @@ std::string InventoryCompressor<treeOrder>::decodeHuffman(const std::string &huf
         if (!token.empty() && token.front() == ' ') {
             token.erase(0, 2);
         }
-        // Xoá dấu ')' ở cuối nếu có
+        // Xoá dấu ')' 
         if (!token.empty() && token.back() == ')') {
             token.pop_back();
         }

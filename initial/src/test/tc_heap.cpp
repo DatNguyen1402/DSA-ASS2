@@ -128,7 +128,7 @@
     for(int idx =0; idx < 8; idx++) arrayList.add(array[idx]);
     Heap<int> minHeap1;
     minHeap1.heapsort(arrayList);
-    minHeap1.heapify(array, 8);
+    // minHeap1.heapify(array, 8);
     cout << minHeap1.toString() << endl;
     
     

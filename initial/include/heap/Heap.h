@@ -443,27 +443,6 @@ void Heap<T>::copyFrom(const Heap<T>& heap){
     }
 }
 
-// template<class T>
-// void Heap<T>::heapsort(XArrayList<T>& arrayList){
-//     removeInternalData();
-
-//     for(int idx=0; idx < size; idx++){
-//         elements[idx] = arrayList.get(idx);
-//     }
-
-
-//     for(int idx=(size-1)/2; idx >= 0; idx--){
-//         reheapDown(idx);
-//         println();
-//     }
-
-//     arrayList.clear();
-//     for(int idx=0; idx < size; idx++){
-//         T item = pop();
-//         arrayList.add(item);
-//     }
-
-// }
 
 template<class T>
 void Heap<T>::reheapDownX(XArrayList<T>& arrayList, int Xsize, int index) {
@@ -481,7 +460,6 @@ void Heap<T>::reheapDownX(XArrayList<T>& arrayList, int Xsize, int index) {
         }
 
         if (aLTb(arrayList.get(smallChild), arrayList.get(index))) {
-            // Use std::swap, assuming get returns T&
             std::swap(arrayList.get(smallChild), arrayList.get(index));
             reheapDownX(arrayList, Xsize, smallChild);
         }
@@ -490,7 +468,7 @@ void Heap<T>::reheapDownX(XArrayList<T>& arrayList, int Xsize, int index) {
 
 template<class T>
 void Heap<T>::heapsort(XArrayList<T>& arrayList) {
-    removeInternalData(); 
+    
     int Xsize = arrayList.size();
 
     // heapify
@@ -504,11 +482,16 @@ void Heap<T>::heapsort(XArrayList<T>& arrayList) {
         reheapDownX(arrayList, idx, 0); 
         arrayList.println(); 
     }
+    //store xarrayList data to heap
+    removeInternalData(); 
+    this->capacity = Xsize;
+    this->count = Xsize;
+    this->elements = new T[capacity];
+    ensureCapacity(Xsize);
+    
+    for (int idx = 0; idx < Xsize; idx++) {
+        elements[idx] = arrayList.get(idx);
+    }
 }
-
-
-
-
-
 
 #endif

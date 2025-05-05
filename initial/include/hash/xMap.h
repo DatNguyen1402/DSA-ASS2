@@ -615,7 +615,6 @@ void xMap<K, V>::removeInternalData()
     if (deleteValues != 0)
         deleteValues(this);
 
-    // Remove all entries in the current map
     for (int idx = 0; idx < this->capacity; idx++)
     {
         DLinkedList<Entry *> &list = this->table[idx];
