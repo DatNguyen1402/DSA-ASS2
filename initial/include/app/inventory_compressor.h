@@ -217,7 +217,7 @@ void InventoryCompressor<treeOrder>::buildHuffman()
     for (int i = 0; i < invManager->size(); i++) {
         
         std::string attributesString = productToString(invManager->getProductAttributes(i), invManager->getProductName(i));
-        cout << "attributesString: " << attributesString << std::endl;
+        // cout << "attributesString: " << attributesString << std::endl;
 
         for(int j = 0; j < attributesString.size(); j++){
             unsigned char c = attributesString[j];

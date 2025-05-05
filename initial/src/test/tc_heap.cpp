@@ -4,7 +4,8 @@
  #include "heap/Heap.h"
  #include "util/Point.h"
  #include "util/sampleFunc.h"
- 
+ #include "list/XArrayList.h"
+
  int myIntComparator(int& lhs, int& rhs){
      if(lhs < rhs) return +1;
      else if(lhs > rhs) return -1;
@@ -105,20 +106,35 @@
         << "]";
      return os.str();
  }
- void heapDemo3(){
-     Point* array[] = {
-         new Point(13.1, 12.4), new Point(5.5, 4.5), new Point(15.5, 14.5),
-         new Point(23.1, 12.4), new Point(35.5, 14.5), new Point(5.5, 34.5)
-     };
-     Heap<Point*> heap(&myPointComparatorMAX, &Heap<Point*>::free);
-     for(int idx=0; idx < 6; idx++) heap.push(array[idx]);
-     heap.println(&myPoint2Str);
+//  void heapDemo3(){
+//      Point* array[] = {
+//          new Point(13.1, 12.4), new Point(5.5, 4.5), new Point(15.5, 14.5),
+//          new Point(23.1, 12.4), new Point(35.5, 14.5), new Point(5.5, 34.5)
+//      };
+//      Heap<Point*> heap(&myPointComparatorMAX, &Heap<Point*>::free);
+//      for(int idx=0; idx < 6; idx++) heap.push(array[idx]);
+//      heap.println(&myPoint2Str);
      
-     for(Heap<Point*>::Iterator it = heap.begin(); it != heap.end(); it++){
-         Point* point = *it;
-         cout << point->radius() << ", ";
-     }
-     cout << endl;
+//      for(Heap<Point*>::Iterator it = heap.begin(); it != heap.end(); it++){
+//          Point* point = *it;
+//          cout << point->radius() << ", ";
+//      }
+//      cout << endl;
+//  }
+
+ void heapDemo3(){
+    int array[] = {50, 20, 15, 10, 8, 6, 7, 23}; 
+    XArrayList<int> arrayList;
+    for(int idx =0; idx < 8; idx++) arrayList.add(array[idx]);
+    Heap<int> minHeap1;
+    minHeap1.heapsort(arrayList);
+    minHeap1.heapify(array, 8);
+    cout << minHeap1.toString() << endl;
+    
+    
+    cout << "Sorted array: ";
+    arrayList.println();
+
  }
 
  

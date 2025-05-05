@@ -97,7 +97,7 @@ private:
     void reheapUp(int position);
     void reheapDown(int position);
     int getItem(T item);
-    
+    void reheapDownX(XArrayList<T>& arrayList, int size, int position);
     void removeInternalData();
     void copyFrom(const Heap<T>& heap);
 
@@ -305,7 +305,15 @@ int Heap<T>::size(){
 
 template<class T>
 void Heap<T>::heapify(T array[], int size){
-    for(int idx=0; idx < size; idx++) push(array[idx]);
+    this->count = size;
+
+    ensureCapacity(size);
+
+    this->elements = new T[size];
+    memcpy(this->elements, array, size*sizeof(T));
+    for(int idx=(size-1)/2; idx >= 0; idx--){
+        reheapDown(idx);
+    }
 }
 
 template<class T>
@@ -435,18 +443,72 @@ void Heap<T>::copyFrom(const Heap<T>& heap){
     }
 }
 
+// template<class T>
+// void Heap<T>::heapsort(XArrayList<T>& arrayList){
+//     removeInternalData();
+
+//     for(int idx=0; idx < size; idx++){
+//         elements[idx] = arrayList.get(idx);
+//     }
+
+
+//     for(int idx=(size-1)/2; idx >= 0; idx--){
+//         reheapDown(idx);
+//         println();
+//     }
+
+//     arrayList.clear();
+//     for(int idx=0; idx < size; idx++){
+//         T item = pop();
+//         arrayList.add(item);
+//     }
+
+// }
+
 template<class T>
-void Heap<T>::heapsort(XArrayList<T>& arrayList){
-    removeInternalData();
-    capacity = 10;
-    count = 0;
-    elements = new T[capacity];
-    for(int idx=0; idx < arrayList.size(); idx++){
-        push(arrayList.get(idx));
+void Heap<T>::reheapDownX(XArrayList<T>& arrayList, int Xsize, int index) {
+    int leftChild = index * 2 + 1;
+    int rightChild = index * 2 + 2;
+    int lastPosition = Xsize - 1;
+
+    if (leftChild <= lastPosition) {
+        int smallChild = leftChild;
+        if (rightChild <= lastPosition) {
+            if (aLTb(arrayList.get(leftChild), arrayList.get(rightChild)))
+                smallChild = leftChild;
+            else
+                smallChild = rightChild;
+        }
+
+        if (aLTb(arrayList.get(smallChild), arrayList.get(index))) {
+            // Use std::swap, assuming get returns T&
+            std::swap(arrayList.get(smallChild), arrayList.get(index));
+            reheapDownX(arrayList, Xsize, smallChild);
+        }
     }
-    for(int idx=count-1; idx >= 0; idx--){
-        arrayList.add(idx);
-    }
-    
 }
+
+template<class T>
+void Heap<T>::heapsort(XArrayList<T>& arrayList) {
+    removeInternalData(); 
+    int Xsize = arrayList.size();
+
+    // heapify
+    for (int idx = (Xsize-1)/2; idx >= 0; idx--) {
+        reheapDownX(arrayList, Xsize, idx);
+        arrayList.println(); 
+    }
+    //extract fist element
+    for (int idx = Xsize-1; idx > 0; idx--) {
+        std::swap(arrayList.get(0), arrayList.get(idx)); 
+        reheapDownX(arrayList, idx, 0); 
+        arrayList.println(); 
+    }
+}
+
+
+
+
+
+
 #endif

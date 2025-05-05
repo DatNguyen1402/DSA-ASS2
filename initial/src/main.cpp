@@ -16,16 +16,16 @@ void (*func_ptr[17])() = {
     // hashDemo5,
     // hashDemo6,
     // hashDemo7,
-    // heapDemo1,
-    // heapDemo2,
-    // heapDemo3,
-    tc_huffman1001,
-    tc_huffman1002,
-    tc_huffman1003,
-    tc_huffman1004,
-    tc_huffman1005,
-    tc_compressor1001,
-    tc_compressor1002
+    heapDemo1,
+    heapDemo2,
+    heapDemo3
+    // tc_huffman1001,
+    // tc_huffman1002,
+    // tc_huffman1003,
+    // tc_huffman1004,
+    // tc_huffman1005,
+    // tc_compressor1001,
+    // tc_compressor1002
 };
 
 void run(int func_idx)

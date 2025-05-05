@@ -323,12 +323,16 @@
  }
  
  template <class T>
- void XArrayList<T>::clear()
- {
-     // TODO
+ void XArrayList<T>::clear() {
      if (deleteUserData) {
-         deleteUserData(this);
+         deleteUserData(this); // nếu T là con trỏ
+     } else {
+         // Nếu không có hàm xóa, gán lại từng phần tử (nếu là primitive/object)
+         for (int i = 0; i < count; i++) {
+             data[i] = T(); // gọi constructor mặc định (reset giá trị)
+         }
      }
+ 
      count = 0;
  }
  
