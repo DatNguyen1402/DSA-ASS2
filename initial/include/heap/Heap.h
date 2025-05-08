@@ -210,23 +210,13 @@ T Heap<T>::pop(){
     if(count == 0) 
         throw std::underflow_error("Calling to peek with the empty heap.");
     
-    T item = elements[0]; //item =25
-    elements[0] = elements[count - 1]; //[15, 18, 13, , , ]
+    T item = elements[0]; 
+    elements[0] = elements[count - 1]; 
     count -= 1;
     reheapDown(0);
     return item;
 }
 
-/*
-      15
-     /  \
-    18   13
- => ReheapDown
-      18
-     /  \
-    15   13
-=> Array: [18, 15, 13, , , ]
- */
 
 template<class T>
 const T Heap<T>::peek(){
@@ -444,54 +434,131 @@ void Heap<T>::copyFrom(const Heap<T>& heap){
 }
 
 
+// template<class T>
+// void Heap<T>::reheapDownX(XArrayList<T>& arrayList, int Xsize, int index) {
+//     int leftChild = index * 2 + 1;
+//     int rightChild = index * 2 + 2;
+//     int lastPosition = Xsize - 1;
+
+//     if (leftChild <= lastPosition) {
+//         int smallChild = leftChild;
+//         if (rightChild <= lastPosition) {
+//             if (aLTb(arrayList.get(leftChild), arrayList.get(rightChild)))
+//                 smallChild = leftChild;
+//             else
+//                 smallChild = rightChild;
+//         }
+
+//         if (aLTb(arrayList.get(smallChild), arrayList.get(index))) {
+//             std::swap(arrayList.get(smallChild), arrayList.get(index));
+//             reheapDownX(arrayList, Xsize, smallChild);
+//         }
+//     }
+// }
+
+// template<class T>
+// void Heap<T>::heapsort(XArrayList<T>& arrayList) {
+    
+//     int const Xsize = arrayList.size();
+//     XArrayList<T> result;
+    
+//     for (int idx = (Xsize-1)/2; idx >= 0; idx--) {
+//         reheapDownX(arrayList, Xsize, idx);
+//     }
+//     // arrayList.println(); 
+    
+//     //extract fist element
+//     for (int idx = Xsize-1; idx > 0; idx--) {
+//         std::swap(arrayList.get(0), arrayList.get(idx)); 
+//         reheapDownX(arrayList, idx, 0);
+        
+//         // reverse the order and print 
+//         result.add(arrayList.get(idx));
+
+//         XArrayList<T> printOut(result);
+
+//         for (int i = 0; i < idx; i++) {
+//             printOut.add(arrayList.get(i));
+//         }
+//         printOut.println(); 
+//         // result.println();
+        
+//     }
+//     result.add(arrayList.get(0));
+//     arrayList = result;
+//     arrayList.println();
+
+//     //store xarrayList data to heap
+//     removeInternalData(); 
+//     this->capacity = Xsize;
+//     this->count = Xsize;
+//     this->elements = new T[capacity];
+//     ensureCapacity(Xsize);
+    
+//     for (int idx = 0; idx < Xsize; idx++) {
+//         elements[idx] = arrayList.get(idx);
+//     }
+// }
+
 template<class T>
-void Heap<T>::reheapDownX(XArrayList<T>& arrayList, int Xsize, int index) {
-    int leftChild = index * 2 + 1;
-    int rightChild = index * 2 + 2;
-    int lastPosition = Xsize - 1;
+void Heap<T>::reheapDownX(XArrayList<T>& a, int heapSize, int idx) {
+    int left  = 2*idx + 1;
+    int right = 2*idx + 2;
+    int smallest = idx;
 
-    if (leftChild <= lastPosition) {
-        int smallChild = leftChild;
-        if (rightChild <= lastPosition) {
-            if (aLTb(arrayList.get(leftChild), arrayList.get(rightChild)))
-                smallChild = leftChild;
-            else
-                smallChild = rightChild;
-        }
+    // Chọn con nhỏ nhất
+    if (left  < heapSize && a.get(left)  < a.get(smallest)) smallest = left;
+    if (right < heapSize && a.get(right) < a.get(smallest)) smallest = right;
 
-        if (aLTb(arrayList.get(smallChild), arrayList.get(index))) {
-            std::swap(arrayList.get(smallChild), arrayList.get(index));
-            reheapDownX(arrayList, Xsize, smallChild);
-        }
+    if (smallest != idx) {
+        // T tmp = a.get(idx);
+        // a.set(idx,             a.get(smallest));
+        // a.set(smallest,        tmp);
+        std::swap(a.get(idx), a.get(smallest));
+        // Đệ quy xuống tiếp
+        reheapDownX(a, heapSize, smallest);
     }
 }
 
 template<class T>
 void Heap<T>::heapsort(XArrayList<T>& arrayList) {
-    
-    int Xsize = arrayList.size();
+    int n = arrayList.size();
 
-    // heapify
-    for (int idx = (Xsize-1)/2; idx >= 0; idx--) {
-        reheapDownX(arrayList, Xsize, idx);
-        arrayList.println(); 
+    // 1) Build Min-Heap
+    for (int i = n/2 - 1; i >= 0; --i) {
+        reheapDownX(arrayList, n, i);
     }
-    //extract fist element
-    for (int idx = Xsize-1; idx > 0; idx--) {
-        std::swap(arrayList.get(0), arrayList.get(idx)); 
-        reheapDownX(arrayList, idx, 0); 
-        arrayList.println(); 
-    }
-    //store xarrayList data to heap
-    removeInternalData(); 
-    this->capacity = Xsize;
-    this->count = Xsize;
-    this->elements = new T[capacity];
-    ensureCapacity(Xsize);
+
+    // 2) Extract-phase
+    XArrayList<T> result;
+    for (int end = n - 1; end > 0; --end) {
+        // 1) pop root (min) vào result
+        result.add(arrayList.get(0));
     
-    for (int idx = 0; idx < Xsize; idx++) {
-        elements[idx] = arrayList.get(idx);
+        // 2) swap root <-> end bằng removeAt/add
+        T rootVal = arrayList.get(0);
+        T endVal  = arrayList.get(end);
+        arrayList.removeAt(end);
+        arrayList.removeAt(0);
+        arrayList.add(0,        endVal);
+        arrayList.add(end,      rootVal);
+    
+        // 3) heapify lại prefix [0..end-1]
+        reheapDownX(arrayList, end, 0);
+    
+        // 4) in snapshot = result + phần heap chưa sort
+        XArrayList<T> snap = result;
+        for (int j = 0; j < end; ++j)
+            snap.add(arrayList.get(j));
+        snap.println();
     }
+
+    // 3) Thêm phần tử còn lại
+    result.add(arrayList.get(0));
+
+    // 4) In toàn bộ đã sort và gán trả về arrayList
+    result.println();
+    arrayList = result;
 }
 
 #endif

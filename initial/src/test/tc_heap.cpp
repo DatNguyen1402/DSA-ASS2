@@ -122,20 +122,36 @@
 //      cout << endl;
 //  }
 
+//  void heapDemo3(){
+//     int array[] = {50, 20, 15, 10, 8, 6, 7, 23, 5};
+//     XArrayList<int> arrayList;
+//     for(int idx =0; idx < 9; idx++) arrayList.add(array[idx]);
+//     Heap<int> minHeap1;
+//     minHeap1.heapsort(arrayList);
+
+//     // minHeap1.heapify(array, 9);
+//     cout << minHeap1.toString() << endl;
+    
+    
+//     cout << "Sorted array: ";
+//     arrayList.println();
+
+//  }
+
+ 
  void heapDemo3(){
-    int array[] = {50, 20, 15, 10, 8, 6, 7, 23}; 
-    XArrayList<int> arrayList;
-    for(int idx =0; idx < 8; idx++) arrayList.add(array[idx]);
-    Heap<int> minHeap1;
-    minHeap1.heapsort(arrayList);
-    // minHeap1.heapify(array, 8);
-    cout << minHeap1.toString() << endl;
-    
-    
-    cout << "Sorted array: ";
-    arrayList.println();
+    XArrayList<int> list;
+    int values[] = {3, 1, 4, 1, 5, 9, 2, 6, 5};
+    for (int v : values) {
+        list.add(v);
+    }
 
- }
+    cout << "Before heapsort: ";
+    list.println();
 
- 
- 
+    Heap<int> heap;
+    heap.heapsort(list);
+
+    cout << "After heapsort: ";
+    list.println();
+}

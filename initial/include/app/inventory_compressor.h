@@ -312,7 +312,7 @@ std::string InventoryCompressor<treeOrder>::decodeHuffman(const std::string &huf
     std::getline(iss, nameOutput, ':'); // Extract name
     while (std::getline(iss, token, ',')) {
         if (!token.empty() && token.front() == ' ') {
-            token.erase(0, 2);
+            token.erase(0, 2); //delete ', '
         }
         // Xoá dấu ')' 
         if (!token.empty() && token.back() == ')') {

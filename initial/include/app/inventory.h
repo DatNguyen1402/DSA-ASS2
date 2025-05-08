@@ -354,7 +354,6 @@ ostream &operator<<(ostream &os, const List2D<T> &matrix)
 InventoryManager::InventoryManager()
 {
     // TODO
-    
 }
 
 InventoryManager::InventoryManager(const List2D<InventoryAttribute> &matrix,

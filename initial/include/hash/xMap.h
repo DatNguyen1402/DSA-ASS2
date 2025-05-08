@@ -316,7 +316,9 @@ V &xMap<K, V>::get(K key)
         }
     }
     
-    throw KeyNotFound("Key not found: ");
+    stringstream errMsg;
+    errMsg << "Key " << key << " is not found";
+    throw KeyNotFound(errMsg.str());
 }
 
 template <class K, class V>
@@ -342,7 +344,9 @@ V xMap<K, V>::remove(K key, void (*deleteKeyInMap)(K))
         }
     }
     // key: not found
-    throw KeyNotFound("Key not found: ");
+    stringstream errMsg;
+    errMsg << "Key " << key << " is not found";
+    throw KeyNotFound(errMsg.str());
 }
 
 template <class K, class V>
@@ -435,7 +439,8 @@ void xMap<K, V>::clear()
             count--;
         }
     }
-    count = 0; // maybe not neccessary if delete well
+    count = 0; 
+    this->capacity = 10;
     this->table = new DLinkedList<Entry *>[capacity];
 }
 
